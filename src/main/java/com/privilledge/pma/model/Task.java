@@ -1,9 +1,6 @@
 package com.privilledge.pma.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Task {
@@ -13,6 +10,17 @@ public class Task {
     private String taskName;
     private String status;
     private String taskType;
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    @ManyToOne
+    private Project project;
 
     public Long getId() {
         return id;

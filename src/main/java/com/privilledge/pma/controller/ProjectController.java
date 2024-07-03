@@ -48,10 +48,23 @@ public class ProjectController {
             newProject.setStatus(project.getStatus());
             newProject.setSummary(project.getSummary());
             newProject.setDueDate(project.getDueDate());
+            newProject.setNotes(project.getNotes());
+            newProject.setProgress(project.getProgress());
 
             Project updatedProject=projectsRepo.save(newProject);
             return ResponseEntity.ok(updatedProject);
         }
         else return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<Project> deleteProject(@PathVariable Long id){
+        Optional<Project> findProject=projectsRepo.findById(id);
+
+    if (findProject.isPresent()){
+        projectsRepo.delete(findProject.get());
+        return ResponseEntity.ok().build();
+    }
+    else return ResponseEntity.notFound().build();
     }
 }

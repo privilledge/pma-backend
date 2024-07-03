@@ -19,8 +19,18 @@ public class Project {
     private String Summary;
     private Date addedDate;
     private Date dueDate;
+    private String notes;
+    private String progress;
     public Long getId() {
         return id;
+    }
+
+    public String getProgress() {
+        return progress;
+    }
+
+    public void setProgress(String progress) {
+        this.progress = progress;
     }
 
     public void setId(Long id) {
@@ -75,5 +85,11 @@ public class Project {
         this.dueDate = dueDate;
     }
 
+    public String getNotes() {
+        return notes;
+    }
 
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
 }
