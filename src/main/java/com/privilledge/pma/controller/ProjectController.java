@@ -51,6 +51,7 @@ public class ProjectController {
             newProject.setNotes(project.getNotes());
             newProject.setProgress(project.getProgress());
 
+
             Project updatedProject=projectsRepo.save(newProject);
             return ResponseEntity.ok(updatedProject);
         }

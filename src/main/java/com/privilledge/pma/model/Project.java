@@ -1,13 +1,12 @@
 package com.privilledge.pma.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
 
 import java.util.Date;
 
 @Entity
+@Table(name = "project")
 public class Project {
 
     @Id
@@ -16,9 +15,24 @@ public class Project {
     private String projectName;
     private String status;
     private  String description;
-    private String Summary;
+    private String summary;
+    @Temporal(TemporalType.DATE)
     private Date addedDate;
+    @Temporal(TemporalType.DATE)
     private Date dueDate;
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public Project(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
     private String notes;
     private String progress;
     public Long getId() {
@@ -27,6 +41,21 @@ public class Project {
 
     public String getProgress() {
         return progress;
+    }
+
+    public Project() {
+    }
+
+    public Project(Long id, String projectName, String status, String description, String summary, Date addedDate, Date dueDate, String notes, String progress) {
+        this.id = id;
+        this.projectName = projectName;
+        this.status = status;
+        this.description = description;
+        this.summary = summary;
+        this.addedDate = addedDate;
+        this.dueDate = dueDate;
+        this.notes = notes;
+        this.progress = progress;
     }
 
     public void setProgress(String progress) {
@@ -61,13 +90,7 @@ public class Project {
         this.description = description;
     }
 
-    public String getSummary() {
-        return Summary;
-    }
 
-    public void setSummary(String summary) {
-        Summary = summary;
-    }
 
     public Date getAddedDate() {
         return addedDate;

@@ -1,8 +1,11 @@
 package com.privilledge.pma.controller;
 
+import com.privilledge.pma.model.Project;
 import com.privilledge.pma.model.Task;
+import com.privilledge.pma.repository.ProjectsRepo;
 import com.privilledge.pma.repository.TaskRepository;
 import com.privilledge.pma.service.TaskService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,19 +15,29 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
-    public TaskController(TaskService taskService, TaskRepository taskRepository) {
+    public TaskController(TaskService taskService, TaskRepository taskRepository, ProjectsRepo projectsRepo) {
         this.taskService = taskService;
         this.taskRepository = taskRepository;
+        this.projectsRepo = projectsRepo;
     }
 
     private TaskService taskService;
+    @Autowired
     private TaskRepository taskRepository;
+    @Autowired
+    private ProjectsRepo projectsRepo;
 
     @PostMapping("/addTask")
-    public String addTask(@RequestBody Task task){
+    public ResponseEntity<?> addTask(@RequestBody Task task) {
+        System.out.println("Received Task: " + task);  // Log the incoming task
+        if (task.getProject() == null || task.getProject().getId() == null) {
+            return ResponseEntity.badRequest().body("Project is not specified");
+        }
+        // proceed with saving the task
         taskService.addTask(task);
-        return "Task added";
+        return ResponseEntity.ok("Task added successfully");
     }
+
 
     @GetMapping("/getTasks")
     public List<Task> getAllTasks(){
@@ -57,6 +70,8 @@ public class TaskController {
            newTask.setTaskName(task.getTaskName());
            newTask.setTaskType(task.getTaskType());
            newTask.setStatus(task.getStatus());
+           newTask.setPriority(task.getPriority());
+           newTask.setProject(task.getProject());
            taskRepository.save(task);
 
            return "Task updated";
@@ -70,6 +85,7 @@ public class TaskController {
         if(findTask.isPresent()){
             Task editTask= findTask.get();
             editTask.setStatus(task.getStatus());
+            editTask.setPriority(task.getPriority());
             taskRepository.save(task);
             return "Task status updated";
         }
