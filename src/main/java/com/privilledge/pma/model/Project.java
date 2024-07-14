@@ -1,5 +1,6 @@
 package com.privilledge.pma.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 
@@ -20,6 +21,18 @@ public class Project {
     private Date addedDate;
     @Temporal(TemporalType.DATE)
     private Date dueDate;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private User user;
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
 
     public String getSummary() {
         return summary;

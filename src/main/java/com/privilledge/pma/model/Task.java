@@ -19,6 +19,20 @@ public class Task {
     @JoinColumn(name = "project_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Project project;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+
 
     public String getPriority() {
         return priority;

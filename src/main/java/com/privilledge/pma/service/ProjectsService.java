@@ -2,6 +2,7 @@ package com.privilledge.pma.service;
 
 import com.privilledge.pma.model.Project;
 import com.privilledge.pma.repository.ProjectsRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ public class ProjectsService {
         this.projectsRepo = projectsRepo;
     }
 
+    @Autowired
     private ProjectsRepo projectsRepo;
 
 
@@ -31,6 +33,10 @@ public class ProjectsService {
 
     public Optional<Project> getProjectById(@PathVariable Long id){
         return projectsRepo.findById(id);
+    }
+
+    public List<Project> getByUserId( Long id){
+        return projectsRepo.findByUserId(id);
     }
 
 }

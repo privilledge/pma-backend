@@ -1,9 +1,12 @@
 package com.privilledge.pma.controller;
 
 import com.privilledge.pma.model.Project;
+import com.privilledge.pma.model.User;
 import com.privilledge.pma.repository.ProjectsRepo;
+import com.privilledge.pma.repository.UserRepo;
 import com.privilledge.pma.service.ProjectsService;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,13 +16,15 @@ import java.util.Optional;
 @RequestMapping("/projects")
 public class ProjectController {
 
-    public ProjectController(ProjectsService projectsService, ProjectsRepo projectsRepo) {
+    public ProjectController(ProjectsService projectsService, ProjectsRepo projectsRepo, UserRepo userRepo) {
         this.projectsService = projectsService;
         this.projectsRepo = projectsRepo;
+        this.userRepo = userRepo;
     }
 
     private ProjectsService projectsService;
     private ProjectsRepo projectsRepo;
+    private UserRepo userRepo;
 
     @PostMapping("/addProject")
     public String saveProject(@RequestBody Project project){
@@ -58,7 +63,7 @@ public class ProjectController {
         else return ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Project> deleteProject(@PathVariable Long id){
         Optional<Project> findProject=projectsRepo.findById(id);
 
@@ -68,4 +73,10 @@ public class ProjectController {
     }
     else return ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/getByUserId/{id}")
+    public List<Project> getProjectByUserId(@PathVariable Long id){
+        return projectsService.getByUserId(id);
+    }
+
 }
