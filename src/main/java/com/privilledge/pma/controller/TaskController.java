@@ -1,12 +1,15 @@
 package com.privilledge.pma.controller;
 
-import com.privilledge.pma.model.Project;
 import com.privilledge.pma.model.Task;
+import com.privilledge.pma.model.User;
 import com.privilledge.pma.repository.ProjectsRepo;
 import com.privilledge.pma.repository.TaskRepository;
+import com.privilledge.pma.repository.UserRepo;
 import com.privilledge.pma.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,10 +18,11 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
-    public TaskController(TaskService taskService, TaskRepository taskRepository, ProjectsRepo projectsRepo) {
+    public TaskController(TaskService taskService, TaskRepository taskRepository, ProjectsRepo projectsRepo, UserRepo userRepo) {
         this.taskService = taskService;
         this.taskRepository = taskRepository;
         this.projectsRepo = projectsRepo;
+        this.userRepo = userRepo;
     }
 
     private TaskService taskService;
@@ -26,15 +30,15 @@ public class TaskController {
     private TaskRepository taskRepository;
     @Autowired
     private ProjectsRepo projectsRepo;
+    @Autowired
+    private UserRepo userRepo;
 
     @PostMapping("/addTask")
-    public ResponseEntity<?> addTask(@RequestBody Task task) {
-        System.out.println("Received Task: " + task);  // Log the incoming task
+    public ResponseEntity<?> addTask(@RequestBody Task task,@RequestHeader("Authorization")String token) {
         if (task.getProject() == null || task.getProject().getId() == null) {
             return ResponseEntity.badRequest().body("Project is not specified");
         }
-        // proceed with saving the task
-        taskService.addTask(task);
+        taskService.addTask(task,token);
         return ResponseEntity.ok("Task added successfully");
     }
 
@@ -92,4 +96,13 @@ public class TaskController {
         else return "Failed to update status";
     }
 
+    @GetMapping("/getTasksByUser")
+    public List<Task> getTasksByUser(Authentication authentication){
+        UserDetails userDetails=(UserDetails) authentication.getPrincipal();
+        String username=userDetails.getUsername();
+        User user=userRepo.findUserByEmail(username);
+
+        return taskService.getTaskByUser(user);
+
+    }
 }

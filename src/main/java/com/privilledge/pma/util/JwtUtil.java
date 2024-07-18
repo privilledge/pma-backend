@@ -14,8 +14,10 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtil {
-
-    private final Key key=Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private final String secretKey = "privilledge_mashegede_project_management_app_2024_secret_key.privilledge_mashegede_project_management_app_2024_secret_key.privilledge_mashegede_project_management_app_2024_secret_key.";
+    private final Key key = Keys.hmacShaKeyFor(secretKey.getBytes());
+    //
+//    private final Key key=Keys.secretKeyFor(SignatureAlgorithm.HS256);
     public String extractUsername(String token){
         return extractClaim(token, Claims::getSubject);
     }
@@ -34,9 +36,12 @@ public class JwtUtil {
     private Boolean isTokenExpired(String token){
         return extractExpiration(token).before(new Date());
     }
-    public String generateToken(String username){
+    public String generateToken(String username,Long user_id){
         Map<String,Object> claims= new HashMap<>();
-        return createToken(claims,username);
+        claims.put("user_id",user_id);
+       String token=createToken(claims,username);
+        System.out.println("Generated Token"+token);
+       return token;
     }
     private String createToken(Map<String,Object> claims,String subject){
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis())).setExpiration(new Date(System.currentTimeMillis()+1000*60*60*10)).signWith(key).compact();
@@ -45,4 +50,5 @@ public class JwtUtil {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
+
 }

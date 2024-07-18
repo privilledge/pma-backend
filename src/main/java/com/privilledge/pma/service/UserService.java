@@ -55,7 +55,7 @@ public class UserService implements UserDetailsService{
     public Map<String, String> authenticateUser(String email, String password) {
         User user = userRepo.findUserByEmail(email);
         if (user != null && bCryptPasswordEncoder.matches(password, user.getPassword())) {
-            String token = jwtUtil.generateToken(user.getEmail());
+            String token = jwtUtil.generateToken(user.getEmail(),user.getId());
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
             response.put("username", user.getUsername());
